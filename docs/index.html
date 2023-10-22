@@ -3,6 +3,7 @@
 	<head>
 		<title>Luciferin II, by Louise Lessel</title>
 		<meta charset="utf-8">
+		<link rel="manifest" href="./manifest.json">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="main.css">
 		<style type="text/css">
@@ -24,6 +25,8 @@
 		<![endif]-->
 
 	</head>
+
+	
 	<body>
 
 		<div id="container"></div>
@@ -351,16 +354,20 @@
 
 				window.addEventListener( 'resize', onWindowResize );
 
+				window.addEventListener('load', function() {
+				setTimeout(function(){
+					// This hides the address bar:
+					window.scrollTo(0, 1);
+				}, 0);
+			});
 			}
+
+
 
 			function onWindowResize() {
-
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				resolution = new THREE.Vector3(window.innerWidth, window.innerHeight, window.devicePixelRatio);
-
 			}
-
-			//
 
 			function animate() {
 				requestAnimationFrame( animate );
