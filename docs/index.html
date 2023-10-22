@@ -1,17 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>LuciferinII</title>
+		<title>Luciferin II, by Louise Lessel</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="main.css">
+		<style type="text/css">
+			html, body {
+				height: 100%;
+				margin: 0;
+			}
+	
+			#container {
+				min-height: 100%; 
+			}
+		</style>
+		<!--[if lte IE 6]>
+		<style type="text/css">
+			#container {
+				height: 100%;
+			}
+		</style>
+		<![endif]-->
 
 	</head>
 	<body>
 
 		<div id="container"></div>
-		<div id="info"><a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - Luciferin II, by  <a href="http://www.louiselessel.com" target="_blank" rel="noopener">Louise Lessel</a></div>
-
 		<script id="vertexShader" type="x-shader/x-vertex">
 
 			varying vec2 vUv;
@@ -182,7 +197,7 @@
 				float pause = 3.;						// pause for seconds
 				float sizeMult = DISTANCE(0.2);
 				float moveSize = 250.0 *sizeMult;
-				
+
 				// Sizes of firefly flash spread
 				float minSize = 200.;
 				float avgSize = 120.;
