@@ -3,24 +3,22 @@
 	<head>
 		<title>Luciferin II, by Louise Lessel</title>
 		<meta charset="utf-8">
-		<!--<link rel="manifest" href="./manifest.json">!-->
+		<link rel="manifest" href="./manifest.json">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="main.css">
 		<style type="text/css">
-			html {
+			html, body {
 				height: 100%;
+				width: 100%;
 				margin: 0;
 				overflow: hidden;
-				width: 100%;
-			}
-			body {
-				height: 100%;
 				position: fixed;
 				overflow-y: scroll;
 				-webkit-overflow-scrolling: touch;
 			}
 			#container {
 				min-height: 100%; 
+				min-width: 100%; 
 			}
 		</style>
 		<!--[if lte IE 6]>
@@ -323,6 +321,13 @@
 			init();
 			animate();
 
+			window.addEventListener('load', function() {
+				setTimeout(function(){
+					// This hides the address bar:
+					window.scrollTo(0, 1);
+				}, 0);
+			});
+
 			function init() {
 
 				const container = document.getElementById( 'container' );
@@ -359,13 +364,6 @@
 				container.appendChild( renderer.domElement );
 
 				window.addEventListener( 'resize', onWindowResize );
-
-				window.addEventListener('load', function() {
-				setTimeout(function(){
-					// This hides the address bar:
-					window.scrollTo(0, 1);
-				}, 0);
-			});
 			}
 
 
