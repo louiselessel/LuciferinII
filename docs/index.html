@@ -6,16 +6,7 @@
 		maximum-scale=1.0; minimum-scale=1.0; user-scalable=0;" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
-
-		<script>
-		window.scrollTo(0, 0) ;
-		</script>
-
-		<script>
-		var scroll = window.setInterval(function() { window.scrollTo(0,
-		1) ; }, 2000) ;
-		</script>
-
+		
 		<meta charset="utf-8">
 		<!-- <link rel="manifest" href="./manifest.json"> -->
 		<meta name="mobile-web-app-capable" content="yes">
@@ -333,11 +324,13 @@
 			init();
 			animate();
 
-			window.addEventListener('load', function() {
-				setTimeout(function(){
-					// This hides the address bar:
+			// Listen for scroll events
+			window.addEventListener('scroll', function() {
+				// Check if the scroll position is greater than 100 pixels (adjust as needed)
+				if (window.scrollY > 100) {
+					// Hide the browser address bar
 					window.scrollTo(0, 1);
-				}, 0);
+				}
 			});
 
 			function init() {
