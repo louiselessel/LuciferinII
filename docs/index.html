@@ -2,13 +2,13 @@
 <html lang="en">
 	<head>
 		<title>Luciferin II, by Louise Lessel</title>
-		<meta name="viewport" content="width=device-width; initial-scale=1.0;
-		maximum-scale=1.0; minimum-scale=1.0; user-scalable=0;" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, 
+		maximum-scale=1.0, minimum-scale=1.0, user-scalable=1" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 
 		<meta charset="utf-8">
-		<!-- <link rel="manifest" href="./manifest.json"> -->
+		<link rel="manifest" href="./manifest.json">
 		<meta name="mobile-web-app-capable" content="yes">
 		<meta name="theme-color" content="#000000">
 
@@ -226,10 +226,10 @@
 				moveSize = 200.0 *sizeMult;		
 				vec4 BG_firefly1 = firefly(uv, CENTER(0.55, 0.33, 0.)-moveOffset, minSize, FLASHBLUEGHOST(0., 1.), BG_fireflyColor, cycle, pause, 0.67, -0.01);
 				vec4 BG_firefly2 = firefly(uv, CENTER(0.21, 0.10, 0.)-moveOffset, moveSize, FLASHBLUEGHOST(0., 1.), BG_fireflyColor, cycle, pause, 0.33, 0.004);
-				vec4 BG_firefly3 = firefly(uv, CENTER(0.3, 0.33, 0.)-moveOffset, avgSize, FLASHBLUEGHOST(0., 1.), BG_fireflyColor, cycle, pause, 0.4, 0.);
+				vec4 BG_firefly3 = firefly(uv, CENTER(0.63, 0.33, 0.)-moveOffset, avgSize, FLASHBLUEGHOST(0., 1.), BG_fireflyColor, cycle, pause, 0.4, 0.);
 				vec4 BG_firefly4 = firefly(uv, CENTER(0.1, 0.18, 0.)+moveOffset, avgSize, FLASHBLUEGHOST(0., 1.), BG_fireflyColor, cycle, pause, 0.7, 0.04);
 				vec4 BG_firefly5 = firefly(uv, CENTER(0.5, 0.37, 0.)-moveOffset, moveSize, FLASHBLUEGHOST(0., 1.), BG_fireflyColor, cycle, pause, 1.5, 0.);
-				vec4 BG_firefly6 = firefly(uv, CENTER(0.5, 0.22, 0.)-moveOffset, minSize, FLASHBLUEGHOST(0., 1.), BG_fireflyColor, cycle, pause, 1.7, 0.);
+				vec4 BG_firefly6 = firefly(uv, CENTER(0.7, 0.22, 0.)-moveOffset, minSize, FLASHBLUEGHOST(0., 1.), BG_fireflyColor, cycle, pause, 1.7, 0.);
 				BG_fireflies = sum(BG_fireflies, BG_firefly1);
 				BG_fireflies = sum(BG_fireflies, BG_firefly2);
 				BG_fireflies = sum(BG_fireflies, BG_firefly3);
@@ -246,15 +246,15 @@
 				moveSize = 300.0 *sizeMult;		
 				vec4 JS_firefly1 = JSfirefly(uv, CENTER(0.5, 0.2, 0.), maxSize, FLASHJSTROKE(0.), JS_fireflyColor, cycle, pause, 1., 0.);
 				vec4 JS_firefly2 = JSfirefly(uv, CENTER(0.2, 0.5, 0.), avgSize, FLASHJSTROKE(0.1), JS_fireflyColor, cycle, pause, 2.2, 0.1);
-				vec4 JS_firefly3 = JSfirefly(uv, CENTER(0.4, 0.1, 0.), minSize, FLASHJSTROKE(0.3), JS_fireflyColor, cycle, pause, 1.5, 0.0);
-				vec4 JS_firefly4 = JSfirefly(uv, CENTER(0.2, 0.7, 0.), minSize, FLASHJSTROKE(0.1), JS_fireflyColor, cycle, pause, 0.0, 0.1);
+				vec4 JS_firefly3 = JSfirefly(uv, CENTER(0.86, 0.1, 0.), minSize, FLASHJSTROKE(0.3), JS_fireflyColor, cycle, pause, 1.5, 0.0);
+				vec4 JS_firefly4 = JSfirefly(uv, CENTER(0.7, 0.7, 0.), minSize, FLASHJSTROKE(0.1), JS_fireflyColor, cycle, pause, 0.0, 0.1);
 				vec4 JS_firefly5 = JSfirefly(uv, CENTER(0.22, 0.15, 0.)+moveOffset, minSize, FLASHJSTROKE(0.), JS_fireflyColor, cycle, pause, 3.5, 0.01);
 				vec4 JS_firefly6 = JSfirefly(uv, CENTER(0.25, 0.55, 0.)-moveOffset, avgSize, FLASHJSTROKE(0.2), JS_fireflyColor, cycle, pause, 4.2, 0.);
 				vec4 JS_firefly7 = JSfirefly(uv, CENTER(0.1, 0.22, 1.), minSize, FLASHJSTROKE(0.), JS_fireflyColor, cycle, pause, 0.22, 0.);
 				vec4 JS_firefly8 = JSfirefly(uv, CENTER(0.22, 0.15, 0.)-moveOffset, moveSize, FLASHJSTROKE(0.05), JS_fireflyColor, cycle, pause, 5.33, 0.);
 				vec4 JS_firefly9 = JSfirefly(uv, CENTER(0.3, 0.3, 0.)-moveOffset, moveSize, FLASHJSTROKE(0.0), JS_fireflyColor, cycle, pause, 3.4, 0.);
 				vec4 JS_firefly10 = JSfirefly(uv, CENTER(0.1, 0.1, 0.)+moveOffset, moveSize, FLASHJSTROKE(0.0), JS_fireflyColor, cycle, pause, 1.7, 0.);
-				vec4 JS_firefly11 = JSfirefly(uv, CENTER(0.5, 0.3, 0.)-moveOffset, moveSize, FLASHJSTROKE(0.01), JS_fireflyColor, cycle, pause, 0.5, 0.);
+				vec4 JS_firefly11 = JSfirefly(uv, CENTER(0.65, 0.3, 0.)-moveOffset, moveSize, FLASHJSTROKE(0.01), JS_fireflyColor, cycle, pause, 0.5, 0.);
 				JS_fireflies = sum(JS_fireflies, JS_firefly1);
 				JS_fireflies = sum(JS_fireflies, JS_firefly2);
 				JS_fireflies = sum(JS_fireflies, JS_firefly3);
@@ -276,9 +276,9 @@
 				moveSize = 300.0 *sizeMult;		
 				vec4 SS_firefly1 = firefly(uv, CENTER(0.2, 0.55, 0.), minSize, FLASHSYNCH(0.1), SS_fireflyColor, cycle, pause, 0.1, 0.1);
 				vec4 SS_firefly2 = firefly(uv, CENTER(0.55, 0.25, 0.), avgSize, FLASHSYNCH(0.1), SS_fireflyColor, cycle, pause, 0.2, 0.1);
-				vec4 SS_firefly3 = firefly(uv, CENTER(0.2, 0.1, 0.), moveSize, FLASHSYNCH(0.3), SS_fireflyColor, cycle, pause, 0.5, 0.0);
+				vec4 SS_firefly3 = firefly(uv, CENTER(0.25, 0.1, 0.), moveSize, FLASHSYNCH(0.3), SS_fireflyColor, cycle, pause, 0.5, 0.0);
 				vec4 SS_firefly4 = firefly(uv, CENTER(0.23, 0.7, 0.), minSize, FLASHSYNCH(0.1), SS_fireflyColor, cycle, pause, 0.1, 0.1);
-				vec4 SS_firefly5 = firefly(uv, CENTER(0.27, 0.11, 0.)+moveOffset, minSize, FLASHSYNCH(0.), SS_fireflyColor, cycle, pause, 1., 0.01);
+				vec4 SS_firefly5 = firefly(uv, CENTER(0.66, 0.11, 0.)+moveOffset, minSize, FLASHSYNCH(0.), SS_fireflyColor, cycle, pause, 1., 0.01);
 				vec4 SS_firefly6 = firefly(uv, CENTER(0.18, 0.45, 0.)-moveOffset, avgSize, FLASHSYNCH(0.2), SS_fireflyColor, cycle, pause, 0.2, 0.);
 				vec4 SS_firefly7 = firefly(uv, CENTER(0.44, 0.5, 0.), avgSize, FLASHSYNCH(0.2), SS_fireflyColor, cycle, pause, 0.55, 0.);
 				vec4 SS_firefly8 = firefly(uv, CENTER(0.55, 0.33, 0.)-moveOffset, maxSize, FLASHSYNCH(0.), SS_fireflyColor, cycle, pause, 0.67, 0.);
