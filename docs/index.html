@@ -276,13 +276,13 @@
 				moveSize = 300.0 *sizeMult;		
 				vec4 SS_firefly1 = firefly(uv, CENTER(0.2, 0.55, 0.), minSize, FLASHSYNCH(0.1), SS_fireflyColor, cycle, pause, 0.1, 0.1);
 				vec4 SS_firefly2 = firefly(uv, CENTER(0.55, 0.25, 0.), avgSize, FLASHSYNCH(0.1), SS_fireflyColor, cycle, pause, 0.2, 0.1);
-				vec4 SS_firefly3 = firefly(uv, CENTER(0.2, 0.1, 0.), minSize, FLASHSYNCH(0.3), SS_fireflyColor, cycle, pause, 0.5, 0.0);
+				vec4 SS_firefly3 = firefly(uv, CENTER(0.2, 0.1, 0.), moveSize, FLASHSYNCH(0.3), SS_fireflyColor, cycle, pause, 0.5, 0.0);
 				vec4 SS_firefly4 = firefly(uv, CENTER(0.23, 0.7, 0.), minSize, FLASHSYNCH(0.1), SS_fireflyColor, cycle, pause, 0.1, 0.1);
 				vec4 SS_firefly5 = firefly(uv, CENTER(0.27, 0.11, 0.)+moveOffset, minSize, FLASHSYNCH(0.), SS_fireflyColor, cycle, pause, 1., 0.01);
 				vec4 SS_firefly6 = firefly(uv, CENTER(0.18, 0.45, 0.)-moveOffset, avgSize, FLASHSYNCH(0.2), SS_fireflyColor, cycle, pause, 0.2, 0.);
 				vec4 SS_firefly7 = firefly(uv, CENTER(0.44, 0.5, 0.), avgSize, FLASHSYNCH(0.2), SS_fireflyColor, cycle, pause, 0.55, 0.);
-				vec4 SS_firefly8 = firefly(uv, CENTER(0.55, 0.33, 0.)-moveOffset, avgSize, FLASHSYNCH(0.), SS_fireflyColor, cycle, pause, 0.67, 0.);
-				vec4 SS_firefly9 = firefly(uv, CENTER(0.77, 0.2, 1.)-moveOffset, minSize, FLASHSYNCH(0.), SS_fireflyColor, cycle, pause, 0.2, 0.);
+				vec4 SS_firefly8 = firefly(uv, CENTER(0.55, 0.33, 0.)-moveOffset, maxSize, FLASHSYNCH(0.), SS_fireflyColor, cycle, pause, 0.67, 0.);
+				vec4 SS_firefly9 = firefly(uv, CENTER(0.77, 0.2, 1.)-moveOffset, avgSize, FLASHSYNCH(0.), SS_fireflyColor, cycle, pause, 0.2, 0.);
 				SS_fireflies = sum(SS_fireflies, SS_firefly1);
 				SS_fireflies = sum(SS_fireflies, SS_firefly2);
 				SS_fireflies = sum(SS_fireflies, SS_firefly3);
