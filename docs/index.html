@@ -79,19 +79,19 @@
 
 			#define iTime				time
 			#define ratio				iResolution.x/iResolution.y;
-			#define speed				0.5
+			#define speed				0.33
 			#define PI 				3.1415926535897932384626433832795
 			#define CENTER(w, h, s)	 vec2((cos(iTime * w * speed+s) + 1.) * 0.5, (sin(iTime * h * speed+s) + 1.)*0.5)
 			
 
 			
-			#define F_TIME(a, b)	 	a * fract(iTime*10. * b)
-			#define F_TIME_RE(a, b) 	a - F_TIME(a, b)
-			#define C_TIME(a, b) 		(cos(iTime * a) + 1.) * b
-			#define S_TIME(a, b)		(sin(iTime * a) + 1.) * b
+			//#define F_TIME(a, b)	 	a * fract(iTime*10. * b)
+			//#define F_TIME_RE(a, b) 	a - F_TIME(a, b)
+			//#define C_TIME(a, b) 		(cos(iTime * a) + 1.) * b
+			//#define S_TIME(a, b)		(sin(iTime * a) + 1.) * b
 			
 			#define FLASH(pos, mult, offset)	(sin((iTime*speed + offset) * pos * mult)) * 0.5 + 0.5		// sine wave from -1to1, *0.5 moved up 0.5, = made to 0to1
-			#define SIMPLEFLASH() 				1.- abs(sin(iTime))
+			//#define SIMPLEFLASH() 				1.- abs(sin(iTime))
 			#define DISTANCE(s)					1.-min( 0.8, (sin(iTime*speed)) *0.5+ 0.5) 	// 0to1 with iTime, but no smaller than 0.2
 			
 			#define FLASHSYNCH(offset) 			1.- pow(( abs(sin((iTime*speed*0.5+offset)*10.)) ),0.5) 		// 1.-pow(abs(sin(x)),0.5) - number is the timing - every 0.5 sec roughly
