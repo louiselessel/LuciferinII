@@ -168,8 +168,8 @@
 			
 			vec4 JSfirefly(vec2 uv, vec2 center, float size, float intensity, vec3 color, float cycleT, float pauseT, float offsetT, float w){
 				// make round
-				uv.x *= ratio;
-				center.x *= ratio;
+				// uv.x *= ratio;
+				// center.x *= ratio;
 				
 				// wiggle
 				float wx = cos(iTime*3.) * w + 1.;
@@ -211,8 +211,10 @@
 			
 			// main -------------------------------------
 			void main() {
-				vec2 uv = 0.5*(gl_FragCoord.xy/iResolution.xy);
-				//vec2 uv = vUv;
+    				// UV mapping
+  				  vec2 uv = gl_FragCoord.xy / iResolution.xy;
+    				// vec2 uv = 0.5*(gl_FragCoord.xy/iResolution.xy);
+    				// vec2 uv = vUv;
 
 				// Timings  
 				float cycle = 6.;						// should be 6 seconds
@@ -388,8 +390,8 @@
 			function onWindowResize() {
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				resolution = new THREE.Vector3(window.innerWidth, window.innerHeight, window.devicePixelRatio);
+				uniforms[ 'iResolution' ].value.set(window.innerWidth, window.innerHeight, window.devicePixelRatio);
 			}
-
 			function animate() {
 				requestAnimationFrame( animate );
 				uniforms[ 'time' ].value = performance.now() / 1000 + randomSeed;
