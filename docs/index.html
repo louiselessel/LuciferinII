@@ -6,12 +6,10 @@
 		maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
-
 		<meta charset="utf-8">
 		<link rel="manifest" href="./manifest.json">
 		<meta name="mobile-web-app-capable" content="yes">
 		<meta name="theme-color" content="#000000">
-
 		<link type="text/css" rel="stylesheet" href="main.css">
 		<style type="text/css">
 			html, body {
@@ -45,358 +43,92 @@
 		<![endif]-->
 	</head>
 
-	
 	<body>
-
 		<div id="container"></div>
 		<script id="vertexShader" type="x-shader/x-vertex">
-
 			varying vec2 vUv;
 
-			void main()	{
+			void main() {
 				vUv = uv;
 				gl_Position = vec4( position, 1.0 );
 			}
-
 		</script>
 
 		<script id="fragmentShader" type="x-shader/x-fragment">
 			varying vec2 vUv;
 			uniform float time;
+			uniform vec3 iResolution;
 
-			/*
-				Phausis reticulata, the blue ghost firefly
-				Photinus pyralis, the j-stroke firefly
-				Photinus Carolinus, the synchronous firefly
-				By Louise Lessel
-			*/
-			
-			// TD variables
-			vec4 fragColor = vec4(0.);
-			
 			// ShaderToy variables
-			uniform vec3      	iResolution;           // viewport resolution (in pixels)
+			#define iTime time
+			#define ratio (iResolution.x / iResolution.y)
+			#define speed 0.5
+			#define PI 3.1415926535897932384626433832795
+			#define CENTER(w, h, s) vec2((cos(iTime * w * speed + s) + 1.0) * 0.5, (sin(iTime * h * speed + s) + 1.0) * 0.5)
 
-			#define iTime				time
-			#define ratio				iResolution.x/iResolution.y;
-			#define speed				0.5
-			#define PI 				3.1415926535897932384626433832795
-			#define CENTER(w, h, s)	 vec2((cos(iTime * w * speed+s) + 1.) * 0.5, (sin(iTime * h * speed+s) + 1.)*0.5)
-			
-
-			
-			#define F_TIME(a, b)	 	a * fract(iTime*10. * b)
-			#define F_TIME_RE(a, b) 	a - F_TIME(a, b)
-			#define C_TIME(a, b) 		(cos(iTime * a) + 1.) * b
-			#define S_TIME(a, b)		(sin(iTime * a) + 1.) * b
-			
-			#define FLASH(pos, mult, offset)	(sin((iTime*speed + offset) * pos * mult)) * 0.5 + 0.5		// sine wave from -1to1, *0.5 moved up 0.5, = made to 0to1
-			#define SIMPLEFLASH() 				1.- abs(sin(iTime))
-			#define DISTANCE(s)					1.-min( 0.8, (sin(iTime*speed)) *0.5+ 0.5) 	// 0to1 with iTime, but no smaller than 0.2
-			
-			#define FLASHSYNCH(offset) 			1.- pow(( abs(sin((iTime*speed*0.5+offset)*10.)) ),0.5) 		// 1.-pow(abs(sin(x)),0.5) - number is the timing - every 0.5 sec roughly
-			#define FLASHBLUEGHOST(pos, mult)	1. - (sin(iTime * pos * mult)) * 0.1 + 0.5
-			#define FLASHJSTROKE(offset)		1.- pow(( abs(sin((iTime*speed*0.5+offset)*10.)) ),0.5)
-			
-			// Synchronization (only on for SS fireflies)
-			bool pauseModOn = false;
-			
-			// colors
-			vec3 BG_fireflyColor = vec3(.1, .45, .6);	
-			vec3 JS_fireflyColor = vec3(.7, 1., 0.);
-			vec3 SS_fireflyColor = vec3(.4, 0.7, 0.);
-			
-			// All fireflies
-			vec4 fireflies = vec4(0.0);
-			vec4 BG_fireflies = vec4(0.0);
-			vec4 JS_fireflies = vec4(0.0);
-			vec4 SS_fireflies = vec4(0.0);
-			
-			// Functions ----------------------------------
-			vec4 sum(vec4 a, vec4 b){
-				return  vec4(
-					min(1., a.r + b.r),
-					min(1., a.g + b.g), 
-					min(1., a.b + b.b),
-					min(1., a.a + b.a));
-			}
-			
-			float clamp_map(float value, float min1, float max1, float min2, float max2) {
-				float newVal = 0.;
-				newVal = min2 + (value - min1) * (max2 - min2) / (max1 - min1);
-				if (newVal < min2) {newVal = min2;}
-				if (newVal > max2) {newVal = max2;}
-				return newVal;
-			}
-			
-			float random (vec2 st) {
-				return fract(sin(dot(st.xy,vec2(12.9898,78.233)))*43758.5453123);
-			}
-			
-			
-			vec4 firefly(vec2 uv, vec2 center, float size, float intensity, vec3 color, float cycleT, float pauseT, float offsetT, float w){
+			vec4 firefly(vec2 uv, vec2 center, float size, float intensity, vec3 color, float cycleT, float pauseT, float offsetT, float w) {
 				// make round
 				uv.x *= ratio;
 				center.x *= ratio;
-				
+
 				// wiggle
-				float wx = cos(iTime*3.) * w + 1.;
-				float wiggleSpeed = speed*2.0;
-				float wiggleAmount = wiggleSpeed / 100.; 			// 0.02 ish is a good number at 64*32 pixel
-				float wy = sin(iTime*wiggleSpeed) * wiggleAmount + 1.;
-			
+				float wx = cos(iTime * 3.0) * w + 1.0;
+				float wy = sin(iTime * speed * 2.0) * 0.02 + 1.0;
 				center.y *= wy;
 				center.x *= wx;
-				
+
 				// light radius and flash
-				vec2 dist = (center.xy-uv.xy) * size;
-				float flash = 1./dot(dist,dist);
-				
-				// Light syncronization
-				float pauseModifier = 1.;
-				if(pauseModOn) {
-					float t = sin(iTime *0.5 +offsetT)*5.;		// change every 6 seconds
-					if (t > 1.) {t =1.;}
-					if (t < 0.) {t =0.;}
-					pauseModifier = t;
-				}
-				
+				vec2 dist = (center.xy - uv.xy) * size;
+				float flash = 1.0 / dot(dist, dist);
+
 				// color the firefly
-				vec4 newcolor = vec4(color * flash * intensity * pauseModifier, 1.);
-				return vec4(newcolor);
+				vec4 newColor = vec4(color * flash * intensity, 1.0);
+				return newColor;
 			}
-			
-			vec4 JSfirefly(vec2 uv, vec2 center, float size, float intensity, vec3 color, float cycleT, float pauseT, float offsetT, float w){
-				// make round
-				uv.x *= ratio;
-				center.x *= ratio;
-				
-				// wiggle
-				float wx = cos(iTime*3.) * w + 1.;
-				float wiggleSpeed = speed*2.0;
-				float wiggleAmount = wiggleSpeed / 100.; 			// 0.02 ish is a good number at 64*32 pixel
-				float wy = sin(iTime*wiggleSpeed) * wiggleAmount + 1.;
-				wy = sin(iTime) * w + 1.;
-			
-				center.y *= wy;
-				center.x *= wx;
-			
-				//Jstroke
-				//EX: pow(cos(PI*x+t*2),3.)
-				float y = pow((cos(PI*center.x+(iTime+offsetT)*2.)),3.)+1.; // moved up 1 to avoid negative numbers
-				
-				// only flash if going upwards
-				// tangent - if negative, the firefly should not flash
-				float y2 = pow(cos(PI*center.x+(iTime+0.1+offsetT)*2.),3.)+1.;
-				float tangent = (y2-y)/(center.x+0.1-center.x);
-				float pauseModifier = 1.;
-				
-				if(tangent <= 0.0) {
-					pauseModifier = 0.0;
-				}
-				
-				// only flash every 6 seconds
-				if (mod(iTime+offsetT, 6.) > 1.) {
-					pauseModifier = 0.0;
-				}
-				
-				// light radius and flash
-				vec2 dist = (center.xy-uv.xy) * size;
-				float flash = 1./dot(dist,dist);
-				
-				// color the firefly
-				vec4 newcolor = vec4(color * flash * intensity * pauseModifier, 1.);
-				return vec4(newcolor);
-			}
-			
-			// main -------------------------------------
+
 			void main() {
-				vec2 uv = 0.5*(gl_FragCoord.xy/iResolution.xy);
-				//vec2 uv = vUv;
+				vec2 uv = gl_FragCoord.xy / iResolution.xy; // map to full screen
+				vec4 fireflies = vec4(0.0);
 
-				// Timings  
-				float cycle = 6.;						// should be 6 seconds
-				float pause = 3.;						// pause for seconds
-				float sizeMult = DISTANCE(0.2);
-				float moveSize = 250.0 *sizeMult;
+				// Example firefly for testing
+				fireflies += firefly(uv, CENTER(0.5, 0.5, 0.0), 100.0, 1.0, vec3(1.0, 1.0, 0.0), 6.0, 3.0, 0.0, 0.1);
 
-				// Sizes of firefly flash spread
-				float minSize = 200.;
-				float avgSize = 120.;
-				float maxSize = 90.;
-				vec2 moveOffset = vec2(0.4,0.);
-				
-				// BG -------------------------------------
-				pauseModOn = false; // no synchronization
-				minSize = 200.;
-				avgSize = 180.;
-				maxSize = 100.;
-				moveSize = 200.0 *sizeMult;		
-				vec4 BG_firefly1 = firefly(uv, CENTER(0.55, 0.33, 0.)-moveOffset, minSize, FLASHBLUEGHOST(0., 1.), BG_fireflyColor, cycle, pause, 0.67, -0.01);
-				vec4 BG_firefly2 = firefly(uv, CENTER(0.21, 0.10, 0.)-moveOffset, moveSize, FLASHBLUEGHOST(0., 1.), BG_fireflyColor, cycle, pause, 0.33, 0.004);
-				vec4 BG_firefly3 = firefly(uv, CENTER(0.63, 0.33, 0.)-moveOffset, avgSize, FLASHBLUEGHOST(0., 1.), BG_fireflyColor, cycle, pause, 0.4, 0.);
-				vec4 BG_firefly4 = firefly(uv, CENTER(0.1, 0.18, 0.)+moveOffset, avgSize, FLASHBLUEGHOST(0., 1.), BG_fireflyColor, cycle, pause, 0.7, 0.04);
-				vec4 BG_firefly5 = firefly(uv, CENTER(0.5, 0.37, 0.)-moveOffset, moveSize, FLASHBLUEGHOST(0., 1.), BG_fireflyColor, cycle, pause, 1.5, 0.);
-				vec4 BG_firefly6 = firefly(uv, CENTER(0.7, 0.22, 0.)-moveOffset, minSize, FLASHBLUEGHOST(0., 1.), BG_fireflyColor, cycle, pause, 1.7, 0.);
-				BG_fireflies = sum(BG_fireflies, BG_firefly1);
-				BG_fireflies = sum(BG_fireflies, BG_firefly2);
-				BG_fireflies = sum(BG_fireflies, BG_firefly3);
-				BG_fireflies = sum(BG_fireflies, BG_firefly4);
-				BG_fireflies = sum(BG_fireflies, BG_firefly5);
-				BG_fireflies = sum(BG_fireflies, BG_firefly6);
-				
-
-				// JS ------------------------------------
-				pauseModOn = false; // no synchronization
-				minSize = 200.;
-				avgSize = 150.;
-				maxSize = 80.;
-				moveSize = 300.0 *sizeMult;		
-				vec4 JS_firefly1 = JSfirefly(uv, CENTER(0.5, 0.2, 0.), maxSize, FLASHJSTROKE(0.), JS_fireflyColor, cycle, pause, 1., 0.);
-				vec4 JS_firefly2 = JSfirefly(uv, CENTER(0.2, 0.5, 0.), avgSize, FLASHJSTROKE(0.1), JS_fireflyColor, cycle, pause, 2.2, 0.1);
-				vec4 JS_firefly3 = JSfirefly(uv, CENTER(0.86, 0.1, 0.), minSize, FLASHJSTROKE(0.3), JS_fireflyColor, cycle, pause, 1.5, 0.0);
-				vec4 JS_firefly4 = JSfirefly(uv, CENTER(0.7, 0.7, 0.), minSize, FLASHJSTROKE(0.1), JS_fireflyColor, cycle, pause, 0.0, 0.1);
-				vec4 JS_firefly5 = JSfirefly(uv, CENTER(0.22, 0.15, 0.)+moveOffset, minSize, FLASHJSTROKE(0.), JS_fireflyColor, cycle, pause, 3.5, 0.01);
-				vec4 JS_firefly6 = JSfirefly(uv, CENTER(0.25, 0.55, 0.)-moveOffset, avgSize, FLASHJSTROKE(0.2), JS_fireflyColor, cycle, pause, 4.2, 0.);
-				vec4 JS_firefly7 = JSfirefly(uv, CENTER(0.1, 0.22, 1.), minSize, FLASHJSTROKE(0.), JS_fireflyColor, cycle, pause, 0.22, 0.);
-				vec4 JS_firefly8 = JSfirefly(uv, CENTER(0.22, 0.15, 0.)-moveOffset, moveSize, FLASHJSTROKE(0.05), JS_fireflyColor, cycle, pause, 5.33, 0.);
-				vec4 JS_firefly9 = JSfirefly(uv, CENTER(0.3, 0.3, 0.)-moveOffset, moveSize, FLASHJSTROKE(0.0), JS_fireflyColor, cycle, pause, 3.4, 0.);
-				vec4 JS_firefly10 = JSfirefly(uv, CENTER(0.1, 0.1, 0.)+moveOffset, moveSize, FLASHJSTROKE(0.0), JS_fireflyColor, cycle, pause, 1.7, 0.);
-				vec4 JS_firefly11 = JSfirefly(uv, CENTER(0.65, 0.3, 0.)-moveOffset, moveSize, FLASHJSTROKE(0.01), JS_fireflyColor, cycle, pause, 0.5, 0.);
-				JS_fireflies = sum(JS_fireflies, JS_firefly1);
-				JS_fireflies = sum(JS_fireflies, JS_firefly2);
-				JS_fireflies = sum(JS_fireflies, JS_firefly3);
-				JS_fireflies = sum(JS_fireflies, JS_firefly4);
-				JS_fireflies = sum(JS_fireflies, JS_firefly5);
-				JS_fireflies = sum(JS_fireflies, JS_firefly6);
-				JS_fireflies = sum(JS_fireflies, JS_firefly7);
-				JS_fireflies = sum(JS_fireflies, JS_firefly8);
-				JS_fireflies = sum(JS_fireflies, JS_firefly9);
-				JS_fireflies = sum(JS_fireflies, JS_firefly10);
-				JS_fireflies = sum(JS_fireflies, JS_firefly11);
-			
-
-				// SS ------------------------------------
-				pauseModOn = true; // synchronization
-				minSize = 200.;
-				avgSize = 120.;
-				maxSize = 50.;
-				moveSize = 300.0 *sizeMult;		
-				vec4 SS_firefly1 = firefly(uv, CENTER(0.2, 0.55, 0.), minSize, FLASHSYNCH(0.1), SS_fireflyColor, cycle, pause, 0.1, 0.1);
-				vec4 SS_firefly2 = firefly(uv, CENTER(0.55, 0.25, 0.), avgSize, FLASHSYNCH(0.1), SS_fireflyColor, cycle, pause, 0.2, 0.1);
-				vec4 SS_firefly3 = firefly(uv, CENTER(0.25, 0.1, 0.), moveSize, FLASHSYNCH(0.3), SS_fireflyColor, cycle, pause, 0.5, 0.0);
-				vec4 SS_firefly4 = firefly(uv, CENTER(0.23, 0.7, 0.), minSize, FLASHSYNCH(0.1), SS_fireflyColor, cycle, pause, 0.1, 0.1);
-				vec4 SS_firefly5 = firefly(uv, CENTER(0.66, 0.11, 0.)+moveOffset, minSize, FLASHSYNCH(0.), SS_fireflyColor, cycle, pause, 1., 0.01);
-				vec4 SS_firefly6 = firefly(uv, CENTER(0.18, 0.45, 0.)-moveOffset, avgSize, FLASHSYNCH(0.2), SS_fireflyColor, cycle, pause, 0.2, 0.);
-				vec4 SS_firefly7 = firefly(uv, CENTER(0.44, 0.5, 0.), avgSize, FLASHSYNCH(0.2), SS_fireflyColor, cycle, pause, 0.55, 0.);
-				vec4 SS_firefly8 = firefly(uv, CENTER(0.55, 0.33, 0.)-moveOffset, maxSize, FLASHSYNCH(0.), SS_fireflyColor, cycle, pause, 0.67, 0.);
-				vec4 SS_firefly9 = firefly(uv, CENTER(0.77, 0.2, 1.)-moveOffset, avgSize, FLASHSYNCH(0.), SS_fireflyColor, cycle, pause, 0.2, 0.);
-				SS_fireflies = sum(SS_fireflies, SS_firefly1);
-				SS_fireflies = sum(SS_fireflies, SS_firefly2);
-				SS_fireflies = sum(SS_fireflies, SS_firefly3);
-				SS_fireflies = sum(SS_fireflies, SS_firefly4);
-				SS_fireflies = sum(SS_fireflies, SS_firefly5);
-				SS_fireflies = sum(SS_fireflies, SS_firefly6);
-				SS_fireflies = sum(SS_fireflies, SS_firefly7);
-				SS_fireflies = sum(SS_fireflies, SS_firefly8);
-				SS_fireflies = sum(SS_fireflies, SS_firefly9);
-				
-				// All fireflies
-				fireflies = sum(BG_fireflies, fireflies);
-				fireflies = sum(JS_fireflies, fireflies);
-				fireflies = sum(SS_fireflies, fireflies);
-
-				fragColor = mix(vec4(0.), fireflies, fireflies.a);
-
-				//gl_FragColor = vec4( vUv, 0.0, 1.0 );
-				//gl_FragColor = vec4( uv, 0.0, 1.0 );
-				gl_FragColor = fragColor; 
+				gl_FragColor = fireflies;
 			}
-				
 		</script>
 
-        <script type="importmap">
-            {
-              "imports": {
-                "three": "https://unpkg.com/three@0.157.0/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.157.0/examples/jsm/"
-              }
-            }
-        </script>
+		<script type="text/javascript">
+			const container = document.getElementById("container");
+			const scene = new THREE.Scene();
+			const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+			const renderer = new THREE.WebGLRenderer();
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			container.appendChild(renderer.domElement);
 
-		<script type="module">
+			const uniforms = {
+				time: { value: 1.0 },
+				iResolution: { value: new THREE.Vector3() }
+			};
 
-			import * as THREE from 'three';
-
-			let camera, scene, renderer;
-
-			let uniforms;
-			let randomSeed;
-
-			init();
-			animate();
-
-			// Listen for scroll events
-			window.addEventListener('scroll', function() {
-				// Check if the scroll position is greater than 100 pixels (adjust as needed)
-				if (window.scrollY > 100) {
-					// Hide the browser address bar
-					window.scrollTo(0, 1);
-				}
+			const material = new THREE.ShaderMaterial({
+				uniforms: uniforms,
+				vertexShader: document.getElementById('vertexShader').textContent,
+				fragmentShader: document.getElementById('fragmentShader').textContent
 			});
 
-			function init() {
+			const plane = new THREE.PlaneGeometry(2, 2);
+			const mesh = new THREE.Mesh(plane, material);
+			scene.add(mesh);
 
-				const container = document.getElementById( 'container' );
-
-				camera = new THREE.OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
-
-				scene = new THREE.Scene();
-
-				const geometry = new THREE.PlaneGeometry( 2, 2 );
-
-				const resolution = new THREE.Vector3(window.innerWidth, window.innerHeight, window.devicePixelRatio);
-
-				randomSeed = THREE.MathUtils.randFloat(0., 200.);
-
-				uniforms = {
-					time: { value: 1.0 },
-					iResolution: { value: resolution }
-				};
-
-				const material = new THREE.ShaderMaterial( {
-
-					uniforms: uniforms,
-					vertexShader: document.getElementById( 'vertexShader' ).textContent,
-					fragmentShader: document.getElementById( 'fragmentShader' ).textContent
-
-				} );
-
-				const mesh = new THREE.Mesh( geometry, material );
-				scene.add( mesh );
-
-				renderer = new THREE.WebGLRenderer();
-				renderer.setPixelRatio( window.devicePixelRatio );
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				container.appendChild( renderer.domElement );
-
-				window.addEventListener( 'resize', onWindowResize );
-			}
-
-
-
-			function onWindowResize() {
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				resolution = new THREE.Vector3(window.innerWidth, window.innerHeight, window.devicePixelRatio);
-			}
+			camera.position.z = 1;
 
 			function animate() {
-				requestAnimationFrame( animate );
-				uniforms[ 'time' ].value = performance.now() / 1000 + randomSeed;
-				renderer.render( scene, camera );
+				uniforms.time.value += 0.05;
+				uniforms.iResolution.value.set(window.innerWidth, window.innerHeight, 1);
+				requestAnimationFrame(animate);
+				renderer.render(scene, camera);
 			}
-
+			animate();
 		</script>
-
 	</body>
 </html>
