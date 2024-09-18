@@ -233,9 +233,10 @@
 				minSize = 200.;
 				avgSize = 180.;
 				maxSize = 100.;
-				moveSize = 200.0 *sizeMult;		
+				moveSize = 200.0 *sizeMult;	
+				// firefly(vec2 uv, vec2 center, float size, float intensity, vec3 color, float cycleT, float pauseT, float offsetT, float w)
 				vec4 BG_firefly1 = firefly(uv, CENTER(0.55, 0.33, 0.)-moveOffset, minSize, FLASHBLUEGHOST(0., 1.), BG_fireflyColor, cycle, pause, 0.67, -0.01);
-				vec4 BG_firefly2 = firefly(uv, CENTER(0.21, 0.10, 0.)-moveOffset, moveSize, FLASHBLUEGHOST(0., 1.), BG_fireflyColor, cycle, pause, 0.33, 0.004);
+				vec4 BG_firefly2 = firefly(uv, CENTER(0.21, 0.10, 0.)-moveOffset, moveSize, FLASHBLUEGHOST(0., 1.), BG_fireflyColor, cycle, pause, 0.33, 0.015);
 				vec4 BG_firefly3 = firefly(uv, CENTER(0.63, 0.33, 0.)-moveOffset, avgSize, FLASHBLUEGHOST(0., 1.), BG_fireflyColor, cycle, pause, 0.4, 0.);
 				vec4 BG_firefly4 = firefly(uv, CENTER(0.1, 0.18, 0.)+moveOffset, avgSize, FLASHBLUEGHOST(0., 1.), BG_fireflyColor, cycle, pause, 0.7, 0.04);
 				vec4 BG_firefly5 = firefly(uv, CENTER(0.5, 0.37, 0.)-moveOffset, moveSize, FLASHBLUEGHOST(0., 1.), BG_fireflyColor, cycle, pause, 1.5, 0.);
