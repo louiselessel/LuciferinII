@@ -168,8 +168,8 @@
 			
 			vec4 JSfirefly(vec2 uv, vec2 center, float size, float intensity, vec3 color, float cycleT, float pauseT, float offsetT, float w){
 				// make round
-				// uv.x *= ratio;
-				// center.x *= ratio;
+				uv.x *= ratio;
+				center.x *= ratio;
 				
 				// wiggle
 				float wx = cos(iTime*3.) * w + 1.;
@@ -212,9 +212,9 @@
 			// main -------------------------------------
 			void main() {
     				// UV mapping
-  				  vec2 uv = gl_FragCoord.xy / iResolution.xy;
+  				// vec2 uv = gl_FragCoord.xy / iResolution.xy;
     				// vec2 uv = 0.5*(gl_FragCoord.xy/iResolution.xy);
-    				// vec2 uv = vUv;
+    				vec2 uv = vUv;
 
 				// Timings  
 				float cycle = 6.;						// should be 6 seconds
