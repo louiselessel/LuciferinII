@@ -51,8 +51,8 @@
         
         // Firefly function (modifies position and size based on time)
         vec2 move(vec2 uv, float t) {
-            uv.x += sin(t * speed) * 0.1;
-            uv.y += cos(t * speed) * 0.1;
+            uv.x += sin(t * speed) * 0.25;
+            uv.y += cos(t * speed) * 0.25;
             return uv;
         }
 
